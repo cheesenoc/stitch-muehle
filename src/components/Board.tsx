@@ -1,6 +1,5 @@
-import React from 'react';
 import { getValidMoves, canRemovePiece } from '../logic/gameState';
-import type { GameState, Player } from '../logic/gameState';
+import type { GameState } from '../logic/gameState';
 import { BOARD_COORDS, BOARD_LINES } from './BoardCoord';
 import { Piece } from './Piece';
 
@@ -10,7 +9,7 @@ interface BoardProps {
   onPieceClick: (index: number) => void;
 }
 
-export const Board: React.FC<BoardProps> = ({ state, onNodeClick, onPieceClick }) => {
+export const Board = ({ state, onNodeClick, onPieceClick }: BoardProps) => {
   const { board, selectedPiece, phase, turn } = state;
   let validMoves: number[] = [];
   

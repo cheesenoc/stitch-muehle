@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { getInitialState, placePiece, movePiece, removePiece } from './logic/gameState';
 import type { GameState } from './logic/gameState';
 import { getBestMove } from './logic/aiController';

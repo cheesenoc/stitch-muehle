@@ -1,4 +1,3 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react';
 import { HUD } from '../components/HUD';
 import type { GameState } from '../logic/gameState';
