@@ -32,8 +32,8 @@ export const Board = ({ state, onNodeClick, onPieceClick }: BoardProps) => {
   const opponent = turn === 1 ? 2 : 1;
 
   return (
-    <div className="relative w-[500px] h-[500px] surface-container-highest rounded-xl comic-border mx-auto flex-shrink-0">
-      <svg width="500" height="500" className="absolute top-0 left-0">
+    <div className="relative w-full max-w-[500px] aspect-square surface-container-highest rounded-xl comic-border mx-auto flex-shrink-0">
+      <svg viewBox="0 0 500 500" className="absolute top-0 left-0 w-full h-full">
         <defs>
           <filter id="squiggle">
             <feTurbulence type="fractalNoise" baseFrequency="0.02" numOctaves="3" result="noise" />
@@ -73,8 +73,8 @@ export const Board = ({ state, onNodeClick, onPieceClick }: BoardProps) => {
       {/* Nodes / Intersection points */}
       {BOARD_COORDS.map(([x, y], i) => (
         <div key={`node-${i}`} 
-             className="absolute w-6 h-6 -ml-3 -mt-3 bg-1A1C1E rounded-full bg-ink z-0"
-             style={{ left: x, top: y }}
+             className="absolute w-[4.8%] h-[4.8%] -ml-[2.4%] -mt-[2.4%] bg-1A1C1E rounded-full bg-ink z-0"
+             style={{ left: `${(x / 500) * 100}%`, top: `${(y / 500) * 100}%` }}
         />
       ))}
 
@@ -85,7 +85,15 @@ export const Board = ({ state, onNodeClick, onPieceClick }: BoardProps) => {
           <Piece 
             key={`ghost-${index}`} 
             player="ghost" 
-            style={{ left: x, top: y, zIndex: 10 }}
+            style={{ 
+              left: `${(x / 500) * 100}%`, 
+              top: `${(y / 500) * 100}%`, 
+              zIndex: 10,
+              width: '9.6%',
+              height: '9.6%',
+              marginLeft: '-4.8%',
+              marginTop: '-4.8%'
+            }}
             onClick={() => handleNodeClick(index)}
           />
         );
@@ -112,7 +120,15 @@ export const Board = ({ state, onNodeClick, onPieceClick }: BoardProps) => {
             isSelected={isSelected}
             isSelectable={isSelectable}
             onClick={() => handlePieceClick(index)}
-            style={{ left: x, top: y, zIndex: isSelected ? 30 : 20 }}
+            style={{ 
+              left: `${(x / 500) * 100}%`, 
+              top: `${(y / 500) * 100}%`, 
+              zIndex: isSelected ? 30 : 20,
+              width: '9.6%',
+              height: '9.6%',
+              marginLeft: '-4.8%',
+              marginTop: '-4.8%'
+            }}
           />
         );
       })}
