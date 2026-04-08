@@ -1,0 +1,48 @@
+steps:
+  # 1. Install dependencies
+  - name: 'node:20'
+    entrypoint: npm
+    args: ['install']
+
+  # 2. Build the production assets
+  - name: 'node:20'
+    entrypoint: npm
+    args: ['run', 'build']
+
+  # 3. Use Buildpacks to create the container image
+  # This uses the 'serve' command we added to package.json
+  - name: 'gcr.io/k8s-skaffold/pack'
+    entrypoint: 'pack'
+    args:
+      - 'build'
+      - '$_IMAGE_NAME'
+      - '--builder'
+      - 'gcr.io/buildpacks/builder:v1'
+      - '--path'
+      - '.'
+
+  # 4. Push the image to Artifact Registry (or Container Registry)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', '$_IMAGE_NAME']
+
+  # 5. Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args:
+      - 'run'
+      - 'deploy'
+      - 'muehle-blast'
+      - '--image'
+      - '$_IMAGE_NAME'
+      - '--region'
+      - '$_REGION'
+      - '--platform'
+      - 'managed'
+      - '--allow-unauthenticated'
+
+substitutions:
+  _IMAGE_NAME: 'gcr.io/$PROJECT_ID/muehle-blast'
+  _REGION: 'europe-west3'
+
+options:
+  logging: CLOUD_LOGGING_ONLY
