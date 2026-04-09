@@ -75,21 +75,37 @@ export function getValidMoves(state: GameState, position: number): number[] {
 
 export function checkWinCondition(state: GameState): GameState {
   const newState = { ...state };
-  const opponent = state.turn === 1 ? 2 : 1;
-  const oppPiecesTotal = newState.piecesInHand[opponent] + newState.piecesOnBoard[opponent];
   
-  if (oppPiecesTotal < 3) {
-    newState.winner = state.turn;
-    newState.phase = 'GAME_OVER';
-  } else if (newState.piecesInHand[opponent] === 0) {
-    // Check if opponent has valid moves
+  // A player loses if they have < 3 pieces (only after placement phase)
+  const p1Total = newState.piecesInHand[1] + newState.piecesOnBoard[1];
+  const p2Total = newState.piecesInHand[2] + newState.piecesOnBoard[2];
+  
+  const isPlacementFinished = newState.piecesInHand[1] === 0 && newState.piecesInHand[2] === 0;
+
+  if (isPlacementFinished) {
+    if (p1Total < 3) {
+      newState.winner = 2;
+      newState.phase = 'GAME_OVER';
+      return newState;
+    }
+    if (p2Total < 3) {
+      newState.winner = 1;
+      newState.phase = 'GAME_OVER';
+      return newState;
+    }
+  }
+
+  // A player also loses if it's their turn and they have no valid moves
+  if (isPlacementFinished && newState.phase !== 'GAME_OVER') {
+    const currentPlayer = newState.turn;
+    const canFly = newState.piecesOnBoard[currentPlayer] === 3;
+    
     let hasMove = false;
-    const oppCanFly = newState.piecesOnBoard[opponent] === 3;
-    if (oppCanFly) {
+    if (canFly) {
       hasMove = newState.board.includes(null);
     } else {
       for (let i = 0; i < 24; i++) {
-        if (newState.board[i] === opponent) {
+        if (newState.board[i] === currentPlayer) {
           if (ADJACENCY[i].some(adj => newState.board[adj] === null)) {
             hasMove = true;
             break;
@@ -97,11 +113,13 @@ export function checkWinCondition(state: GameState): GameState {
         }
       }
     }
+
     if (!hasMove) {
-      newState.winner = state.turn;
+      newState.winner = currentPlayer === 1 ? 2 : 1;
       newState.phase = 'GAME_OVER';
     }
   }
+
   return newState;
 }
 
