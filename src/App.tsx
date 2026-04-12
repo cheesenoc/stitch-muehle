@@ -6,6 +6,7 @@ import type { Difficulty } from './logic/aiController';
 import { Board } from './components/Board';
 import { HUD } from './components/HUD';
 import { VictoryOverlay } from './components/VictoryOverlay';
+import { TokenInventory } from './components/TokenInventory';
 
 function App() {
   const [gameState, setGameState] = useState<GameState>(getInitialState());
@@ -100,11 +101,13 @@ function App() {
               Mühle Blast!
             </h1>
           </div>
+          <TokenInventory state={gameState} type="REMAINING" />
           <Board 
             state={gameState} 
             onNodeClick={handleNodeClick} 
             onPieceClick={handlePieceClick} 
           />
+          <TokenInventory state={gameState} type="CAPTURED" />
         </div>
 
         {/* HUD Side */}
